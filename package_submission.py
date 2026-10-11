@@ -14,8 +14,7 @@ INCLUDED_FILES = [
     "requirements.txt",
     "docker-compose.yml",
     ".env.example",
-    ".gitignore",
-    "ASSIGNMENT.md"
+    ".gitignore"
 ]
 
 EXCLUDED_EXTENSIONS = [".pyc", ".pyo", ".DS_Store"]

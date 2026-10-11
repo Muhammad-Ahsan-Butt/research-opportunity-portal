@@ -1,7 +1,4 @@
-/**
- * University Research Opportunity Portal - Frontend Application
- * Handles API communication, dynamic rendering, modals, and validation.
- */
+// frontend logic for opportunity portal
 
 // State
 let allOpportunities = [];
@@ -36,9 +33,7 @@ const createErrorBanner = document.getElementById("create-error");
 const editErrorBanner = document.getElementById("edit-error");
 
 
-// ---------------------------------------------------------------------
 // Notification Toast System
-// ---------------------------------------------------------------------
 function showToast(message, type = "success") {
     const container = document.getElementById("toast-container");
     const toast = document.createElement("div");
@@ -55,9 +50,7 @@ function showToast(message, type = "success") {
 }
 
 
-// ---------------------------------------------------------------------
 // Modal Controls
-// ---------------------------------------------------------------------
 function openModal(modal) {
     if (modal) modal.style.display = "flex";
 }
@@ -82,9 +75,7 @@ window.addEventListener("click", (e) => {
 });
 
 
-// ---------------------------------------------------------------------
 // Fetch and Render Opportunities (GET /api/opportunities)
-// ---------------------------------------------------------------------
 async function loadOpportunities() {
     loadingSpinner.style.display = "block";
     grid.innerHTML = "";
@@ -222,9 +213,7 @@ function attachCardEventListeners() {
 }
 
 
-// ---------------------------------------------------------------------
 // Single Opportunity Details View (GET /api/opportunities/:id)
-// ---------------------------------------------------------------------
 async function openDetailsView(id) {
     try {
         const res = await fetch(`/api/opportunities/${id}`);
@@ -262,9 +251,7 @@ async function openDetailsView(id) {
 }
 
 
-// ---------------------------------------------------------------------
 // Create Research Opportunity (POST /api/opportunities)
-// ---------------------------------------------------------------------
 document.getElementById("open-create-modal-btn").addEventListener("click", () => {
     createForm.reset();
     createErrorBanner.style.display = "none";
@@ -328,9 +315,7 @@ createForm.addEventListener("submit", async (e) => {
 });
 
 
-// ---------------------------------------------------------------------
 // Edit Research Opportunity (PUT /api/opportunities/:id)
-// ---------------------------------------------------------------------
 async function openEditView(id) {
     editForm.reset();
     editErrorBanner.style.display = "none";
@@ -409,9 +394,7 @@ editForm.addEventListener("submit", async (e) => {
 });
 
 
-// ---------------------------------------------------------------------
 // Toggle Opportunity Status (PUT /api/opportunities/:id)
-// ---------------------------------------------------------------------
 async function toggleOpportunityStatus(id, newStatus) {
     try {
         const res = await fetch(`/api/opportunities/${id}`, {
@@ -433,9 +416,7 @@ async function toggleOpportunityStatus(id, newStatus) {
 }
 
 
-// ---------------------------------------------------------------------
 // Delete Research Opportunity (DELETE /api/opportunities/:id)
-// ---------------------------------------------------------------------
 function promptDeleteOpportunity(id, title) {
     deleteTargetId = id;
     document.getElementById("delete-target-title").textContent = `"${title}"`;
@@ -472,9 +453,7 @@ document.getElementById("confirm-delete-btn").addEventListener("click", async ()
 });
 
 
-// ---------------------------------------------------------------------
 // Filter & Search Controls Listeners
-// ---------------------------------------------------------------------
 searchInput.addEventListener("input", renderFilteredOpportunities);
 departmentFilter.addEventListener("change", renderFilteredOpportunities);
 statusFilter.addEventListener("change", renderFilteredOpportunities);

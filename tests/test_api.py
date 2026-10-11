@@ -1,7 +1,4 @@
-"""
-Integration tests for University Research Opportunity Portal API.
-Covers all 8 test scenarios defined in Section 6 of the assignment.
-"""
+# test suite for api endpoints
 
 import sys
 import os

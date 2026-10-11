@@ -1,8 +1,3 @@
-"""
-Flask REST API for University Research Opportunity Portal
-FAST-NUCES Peshawar - Computer Networks Assignment #1
-"""
-
 import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
@@ -20,7 +15,8 @@ STATIC_DIR = os.path.join(BASE_DIR, "frontend", "static")
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 CORS(app)
 
-# Helper to format date objects in opportunity dictionaries
+
+# format dates and timestamps for json response
 def serialize_opportunity(row):
     if not row:
         return row
@@ -34,9 +30,7 @@ def serialize_opportunity(row):
     return item
 
 
-# -------------------------------------------------------------
-# Error Handlers (Standardized JSON Responses & Status Codes)
-# -------------------------------------------------------------
+# error handlers
 @app.errorhandler(400)
 def handle_bad_request(err):
     msg = getattr(err, "description", "Bad Request")
@@ -59,18 +53,13 @@ def handle_server_error(err):
     return jsonify({"success": False, "error": "Internal server error occurred."}), 500
 
 
-# -------------------------------------------------------------
-# Frontend Route
-# -------------------------------------------------------------
+# frontend home page
 @app.route("/", methods=["GET"])
 def index():
-    """Serve the frontend single-page application."""
     return render_template("index.html")
 
 
-# -------------------------------------------------------------
-# Health Check Endpoint
-# -------------------------------------------------------------
+# health check
 @app.route("/api/health", methods=["GET"])
 def health_check():
     db_ok = check_db_connection()
@@ -82,11 +71,7 @@ def health_check():
     }), status_code
 
 
-# -------------------------------------------------------------
-# REST API Endpoints (CRUD)
-# -------------------------------------------------------------
-
-# 1. POST /api/opportunities - Create a Research Opportunity
+# 1. create opportunity
 @app.route("/api/opportunities", methods=["POST"])
 def create_opportunity():
     try:
@@ -123,7 +108,6 @@ def create_opportunity():
             ))
             new_id = cursor.lastrowid
 
-            # Fetch the newly created row
             cursor.execute("SELECT * FROM opportunities WHERE id = %s;", (new_id,))
             created_record = cursor.fetchone()
 
@@ -136,11 +120,11 @@ def create_opportunity():
         }), 201
 
     except Exception as exc:
-        print(f"[API ERROR] POST /api/opportunities: {exc}")
+        print(f"Error creating opportunity: {exc}")
         return jsonify({"success": False, "error": f"Failed to create opportunity: {str(exc)}"}), 500
 
 
-# 2. GET /api/opportunities - Retrieve All Research Opportunities
+# 2. get all opportunities
 @app.route("/api/opportunities", methods=["GET"])
 def get_all_opportunities():
     try:
@@ -179,11 +163,11 @@ def get_all_opportunities():
         }), 200
 
     except Exception as exc:
-        print(f"[API ERROR] GET /api/opportunities: {exc}")
+        print(f"Error fetching opportunities: {exc}")
         return jsonify({"success": False, "error": f"Failed to retrieve opportunities: {str(exc)}"}), 500
 
 
-# 3. GET /api/opportunities/:id - Retrieve One Research Opportunity
+# 3. get opportunity by id
 @app.route("/api/opportunities/<int:opp_id>", methods=["GET"])
 def get_opportunity_by_id(opp_id):
     try:
@@ -205,11 +189,11 @@ def get_opportunity_by_id(opp_id):
         }), 200
 
     except Exception as exc:
-        print(f"[API ERROR] GET /api/opportunities/{opp_id}: {exc}")
+        print(f"Error fetching opportunity {opp_id}: {exc}")
         return jsonify({"success": False, "error": f"Database error: {str(exc)}"}), 500
 
 
-# 4. PUT /api/opportunities/:id - Update a Research Opportunity
+# 4. update opportunity
 @app.route("/api/opportunities/<int:opp_id>", methods=["PUT"])
 def update_opportunity(opp_id):
     try:
@@ -226,7 +210,6 @@ def update_opportunity(opp_id):
 
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Check existence first
             cursor.execute("SELECT id FROM opportunities WHERE id = %s;", (opp_id,))
             existing = cursor.fetchone()
             if not existing:
@@ -236,14 +219,12 @@ def update_opportunity(opp_id):
                     "error": f"Cannot update. Research opportunity with ID {opp_id} not found."
                 }), 404
 
-            # Build dynamic UPDATE clause
             set_clauses = [f"{col} = %s" for col in cleaned.keys()]
             update_sql = f"UPDATE opportunities SET {', '.join(set_clauses)} WHERE id = %s;"
             params = list(cleaned.values()) + [opp_id]
 
             cursor.execute(update_sql, tuple(params))
 
-            # Fetch updated record
             cursor.execute("SELECT * FROM opportunities WHERE id = %s;", (opp_id,))
             updated_record = cursor.fetchone()
 
@@ -256,17 +237,16 @@ def update_opportunity(opp_id):
         }), 200
 
     except Exception as exc:
-        print(f"[API ERROR] PUT /api/opportunities/{opp_id}: {exc}")
+        print(f"Error updating opportunity {opp_id}: {exc}")
         return jsonify({"success": False, "error": f"Failed to update opportunity: {str(exc)}"}), 500
 
 
-# 5. DELETE /api/opportunities/:id - Delete a Research Opportunity
+# 5. delete opportunity
 @app.route("/api/opportunities/<int:opp_id>", methods=["DELETE"])
 def delete_opportunity(opp_id):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Check existence
             cursor.execute("SELECT id, title FROM opportunities WHERE id = %s;", (opp_id,))
             existing = cursor.fetchone()
             if not existing:
@@ -282,27 +262,22 @@ def delete_opportunity(opp_id):
 
         return jsonify({
             "success": True,
-            "message": f"Research opportunity #{opp_id} ('{existing['title']}') was deleted successfully."
+            "message": f"Research opportunity #{opp_id} was deleted successfully."
         }), 200
 
     except Exception as exc:
-        print(f"[API ERROR] DELETE /api/opportunities/{opp_id}: {exc}")
+        print(f"Error deleting opportunity {opp_id}: {exc}")
         return jsonify({"success": False, "error": f"Failed to delete opportunity: {str(exc)}"}), 500
 
 
-# -------------------------------------------------------------
-# Main Application Runner
-# -------------------------------------------------------------
 if __name__ == "__main__":
     port = int(os.getenv("FLASK_PORT", 5000))
     debug = os.getenv("FLASK_DEBUG", "True").lower() in ("true", "1", "yes")
 
-    print("[STARTUP] Checking database initialization...")
     try:
         init_db()
-        print("[STARTUP] Database verified.")
     except Exception as e:
-        print(f"[STARTUP WARNING] Database auto-check: {e}")
+        print(f"Database check warning: {e}")
 
-    print(f"Starting Research Opportunity Portal on http://127.0.0.1:{port}")
+    print(f"Starting server on http://127.0.0.1:{port}")
     app.run(host="0.0.0.0", port=port, debug=debug)
