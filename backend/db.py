@@ -98,6 +98,6 @@ if __name__ == "__main__":
     print(f"Connecting to MySQL at {DB_HOST}:{DB_PORT} as {DB_USER}...")
     init_db()
     if check_db_connection():
-        print("✅ Database connection and health check verified successfully!")
+        print("Database connection and health check verified successfully.")
     else:
-        print("❌ Database health check failed.")
+        print("Database health check failed.")
