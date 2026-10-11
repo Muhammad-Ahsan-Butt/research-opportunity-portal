@@ -1,0 +1,29 @@
+meta {
+  name: 1. Create Opportunity 1
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:5000/api/opportunities
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "title": "Distributed Consensus in Edge Networks",
+    "description": "Investigating lightweight Raft consensus variants tailored for mobile edge networks.",
+    "research_area": "Distributed Systems & Networks",
+    "faculty_name": "Dr. Tariq Khan",
+    "department": "Computer Science",
+    "required_skills": "Go, Python, Docker, Network Sockets",
+    "positions_available": 2,
+    "deadline": "2026-12-15",
+    "status": "Open"
+  }
+}

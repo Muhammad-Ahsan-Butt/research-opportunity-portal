@@ -1,0 +1,376 @@
+{
+  "info": {
+    "_postman_id": "8f30e64c-b174-4b5f-9721-a3f2d2508129",
+    "name": "Research Opportunity Portal API Tests",
+    "description": "Complete test collection for FAST-NUCES CN Assignment 1. Covers all 8 demonstration requirements with dynamic collection variables and automated assertion tests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:5000",
+      "type": "string"
+    },
+    {
+      "key": "created_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Opportunity 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test(\"Response has success true and opportunity data\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data).to.have.property('id');",
+              "    pm.collectionVariables.set('created_id', jsonData.data.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Distributed Consensus in Edge Networks\",\n  \"description\": \"Investigating lightweight Raft consensus variants tailored for high-latency low-bandwidth mobile edge environments.\",\n  \"research_area\": \"Distributed Systems & Networks\",\n  \"faculty_name\": \"Dr. Tariq Khan\",\n  \"department\": \"Computer Science\",\n  \"required_skills\": \"Go, Python, Docker, Network Sockets\",\n  \"positions_available\": 2,\n  \"deadline\": \"2026-12-15\",\n  \"status\": \"Open\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "2. Create Opportunity 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test(\"Opportunity created successfully\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Zero-Knowledge Proofs for Private Authentication\",\n  \"description\": \"Implementation and benchmarking of zk-SNARK protocols for privacy-preserving student identity verification.\",\n  \"research_area\": \"Cybersecurity & Cryptography\",\n  \"faculty_name\": \"Dr. Ayesha Malik\",\n  \"department\": \"Software Engineering\",\n  \"required_skills\": \"Rust, Discrete Math, Cryptography\",\n  \"positions_available\": 1,\n  \"deadline\": \"2026-11-30\",\n  \"status\": \"Open\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "3. Create Opportunity 3",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test(\"Stores ID of Opportunity 3 for update and delete tests\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.collectionVariables.set('created_id', jsonData.data.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Multi-Agent Reinforcement Learning for Traffic Signal Optimization\",\n  \"description\": \"Simulating urban vehicle traffic using SUMO and training coordinated multi-agent Q-learning models to reduce congestion.\",\n  \"research_area\": \"Reinforcement Learning & Smart Cities\",\n  \"faculty_name\": \"Prof. Bilal Ahmed\",\n  \"department\": \"Artificial Intelligence\",\n  \"required_skills\": \"Python, PyTorch, SUMO Simulator\",\n  \"positions_available\": 3,\n  \"deadline\": \"2026-12-01\",\n  \"status\": \"Open\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "4. Retrieve All Opportunities",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Returns array of opportunities\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data).to.be.an('array');",
+              "    pm.expect(jsonData.count).to.be.at.least(3);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "5. Retrieve One Opportunity by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Returned opportunity matches target ID\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data.id).to.eql(Number(pm.collectionVariables.get('created_id')));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{created_id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{created_id}}"]
+        }
+      }
+    },
+    {
+      "name": "6. Update an Existing Opportunity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Field values updated correctly\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data.positions_available).to.eql(5);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated: Multi-Agent RL for Autonomous Traffic\",\n  \"positions_available\": 5,\n  \"required_skills\": \"Python, PyTorch, SUMO Simulator, Ray RLlib\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{created_id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{created_id}}"]
+        }
+      }
+    },
+    {
+      "name": "7. Change Opportunity Status from Open to Closed",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Status successfully changed to Closed\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data.status).to.eql(\"Closed\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Closed\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{created_id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{created_id}}"]
+        }
+      }
+    },
+    {
+      "name": "8. Delete an Opportunity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Delete confirmed\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{created_id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{created_id}}"]
+        }
+      }
+    },
+    {
+      "name": "9. Request Deleted Opportunity (Demonstrate 404 Not Found)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404 Not Found\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "pm.test(\"Response contains not found error message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(false);",
+              "    pm.expect(jsonData.error).to.include(\"not found\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{created_id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{created_id}}"]
+        }
+      }
+    },
+    {
+      "name": "10. Send Invalid Request (Demonstrate 400 Bad Request)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "pm.test(\"Response contains validation error message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(false);",
+              "    pm.expect(jsonData).to.have.property('error');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Incomplete Opportunity Missing Fields\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    }
+  ]
+}
