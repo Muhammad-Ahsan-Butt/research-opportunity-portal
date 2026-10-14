@@ -40,6 +40,9 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Submission zips & artifacts
+# Submission zips & media
 *.zip
+*.webm
+*.mp4
+*.mkv
 scratch/
